@@ -1,0 +1,256 @@
+//
+// Created by Administrator on 2023/6/30.
+//
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int age;
+    char name[];
+} Elemtype;
+
+// 创建链表
+typedef struct LNode {
+    Elemtype data;
+    struct LNode *next;
+}LNode, *LinkList;
+
+typedef int status;
+
+// 初始化链表
+status InitList(LinkList L){
+    L = (LNode *)malloc(sizeof (LNode));
+    L->next = NULL;
+}
+
+// 判断空表
+status JudgeLinkEmpty(LinkList L){
+    if(L->next){
+        return 1;
+    }
+    else{
+        return -1;
+    }
+}
+
+// 销毁链表
+status DestroyLink(LinkList L){
+    if(!L){
+        return -1;
+    }
+    LinkList p = L;
+    while (p){
+        LinkList pfree = p;
+        p = p->next;
+        free(pfree);
+        pfree = NULL;
+    }
+    L = NULL;
+    return 1;
+}
+
+// 清空链表
+status CleanLink(LinkList L){
+    LinkList p = L->next;
+    while (p){
+        LinkList q = p->next;
+        free(p);
+        p = q;
+    }
+    L->next = NULL;
+}
+
+// 在第i个位置插入元素e（带头结点）
+status insertLinkwithHead(LinkList L, int i, Elemtype e){
+    if(i < 1)
+        return -1;
+    LNode * p;    // 指针p指向当前扫描到的结点
+    int j = 0;    // 当前p指向的是第几个结点
+    p = L;        // 此时p指向头结点
+    while (p!=NULL && j < i-1){
+        p = p->next;
+        j++;
+    }
+    if(p == NULL){ // i值不合法
+        return -2;
+    }
+    LNode * s = (LNode *) malloc(sizeof (LNode));
+    s->data = e;
+    s->next = p->next;
+    p->next = s;
+    return 1;
+}
+
+// 在第i个位置插入元素e（不带头结点）
+status insertLinkwithoutHead(LinkList L, int i, Elemtype e) {
+    if(i < 1)
+        return -1;
+    if(i == 1){   // 插入第1个结点的操作和其他结点操作不同
+        LNode * s = (LNode *) malloc(sizeof (LNode));
+        s->data = e;
+        s->next = L;
+        L = s;   // 头指针指向新结点
+        return 1;
+    }
+    LNode * p;
+    int j = 1;
+    p = L;
+    while (p!=NULL && j < i-1){
+        p = p->next;
+        j++;
+    }
+    if(p == NULL){
+        return -2;
+    }
+    LNode * s = (LNode *) malloc(sizeof (LNode));
+    s->data = e;
+    s->next = p->next;
+    p->next = s;
+    return 1;
+}
+
+// 在p结点之后插入元素e  （后插）
+status insertNextNode(LNode * p, Elemtype e){
+    if(p == NULL)
+        return -1;
+    LNode * s = (LNode *) malloc(sizeof (LNode));
+    if(s == NULL)   // 内存分配失败
+        return -2;
+    s->data = e;
+    s->next = p->next;
+    p->next = s;
+    return 1;
+}
+
+// 在p结点之后插入元素e  （前插）
+status insertPriorNode(LNode * p, Elemtype e){
+    if(p == NULL)
+        return -1;
+    LNode * s = (LNode *) malloc(sizeof (LNode));
+    if(s == NULL)
+        return -2;
+    s->next = p->next;
+    p->next = s;
+    s->data = p->data;
+    p->data = e;
+    return 1;
+}
+
+// 删除第i个结点
+status delLink(LinkList L, int i, Elemtype e){
+    if(i < 1)
+        return -1;
+    LNode * p;  //指针p指向当前扫描到的结点
+    int j = 0;  //当前p指向的第几个结点
+    p = L;
+    while (p!=NULL && j < i-1){
+        p = p->next;
+        j++;
+    }
+    if(p == NULL)
+        return -2;
+    if(p->next == NULL)
+        return -3;
+    LNode * q = p->next;
+    e = q->data;
+    p->next = q->next;
+    free(q);
+    return 1;
+}
+
+// 删除指定结点p  （如果p是最后一个结点，只能从头遍历寻找p的前驱）
+status delNode(LNode *p){
+    if(p == NULL)
+        return -1;
+    LNode *q = p->next;
+    p->data = p->next->data;
+    p->next = q->next;
+    free(q);
+    return 1;
+}
+// 求单链表表长
+int calcLengthOfLink(LinkList L){
+    LinkList p = L->next;
+    int count = 0;
+    while(p){
+        count++;
+        p = p->next;
+    }
+    return count;
+}
+int main() {
+
+}
+
+
+homework：
+//
+// Created by Administrator on 2023/6/30.
+//
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+
+// 1、1 5 12 34 36 63 组合成最大的数
+
+void intArrayToStringArray(int arr[], int size, char** strArr) {
+    for (int i = 0; i < size; i++) {
+        strArr[i] = (char*)malloc(20 * sizeof(char));  // 分配每个字符串的内存
+        sprintf(strArr[i], "%d", arr[i]);
+    }
+}
+char * maxNumber(int arr[], int n){
+
+}
+// 2、给一个句子，i am a student问有几个单词
+int calcWord(const char arr[]){
+    if(!(*arr))
+        return 0;
+    int count = 1;
+    while (*arr){
+        if(*arr == ' '){
+            count++;
+        }
+        arr++;
+    }
+    return count;
+}
+// 3、实现strcat
+char * my_strcat(char * dest, const char * src)
+{
+    assert(dest && src);
+    char * ret = dest;
+    while (*dest != '\0')
+    {
+        dest++;
+    }
+    while (*dest++ = *src++)
+    {
+        ;
+    }
+    return ret;
+}
+int main(){
+    int arr[] = {1,5,12,34,36,63};
+    int size = sizeof (arr) / sizeof(arr[0]);
+    char** strArr = (char**)malloc(size * sizeof(char*));  // 分配字符串数组内存
+    intArrayToStringArray(arr, size, strArr);
+    for (int i = 0; i < size-1; ++i) {
+        for(int j = i+1; j < size; j++){
+            if(strcmp(strArr[i], strArr[j]) < 0){
+                char tmp[] = "";
+                strcpy(tmp, strArr[i]);
+                strcpy(strArr[i], strArr[j]);
+                strcpy(strArr[j], tmp);
+            }
+        }
+    }
+    for (int i = 0; i < size; ++i) {
+        printf("%s",strArr[i]);
+    }
+    free(strArr);
+    strArr = NULL;
+}
